@@ -4,7 +4,10 @@
       "Bash(npm install *)",
       "Bash(npx tsc *)",
       "Read(//c/Users/timem/AppData/Local/Temp/claude/c--Users-timem-OneDrive-Desktop-projects-mizan---arabic-ux-audit/f4e8df54-b666-44de-83ec-cacc375029fe/tasks/**)",
-      "Bash(npx vite *)"
+      "Bash(npx vite *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
