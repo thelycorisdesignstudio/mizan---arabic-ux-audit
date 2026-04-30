@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Playwrite+NO:wght@100..400&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100;200;300;400;500;600;700;800&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Playwrite NO", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Arial", sans-serif;
-  --font-playwrite: "Playwrite NO", cursive;
+  --font-sans: "Google Sans Flex", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Arial", sans-serif;
+  --font-display: "Google Sans Flex", sans-serif;
   --font-arabic: "Noto Naskh Arabic", serif;
-  --font-dm: "Playwrite NO", cursive;
+  --font-dm: "Google Sans Flex", sans-serif;
 
   --color-mizan-blue: rgb(0, 113, 227);
   --color-mizan-blue-dark: rgb(0, 98, 196);
@@ -86,6 +86,12 @@
     background-size: 180px 180px;
   }
 
+  @media (max-width: 640px) {
+    .grid[class*="lg:grid-cols"] {
+      grid-template-columns: 1fr;
+    }
+  }
+
   @media print {
     .no-print {
       display: none !important;
@@ -144,11 +150,11 @@
 }
 
 .font-dm-200 {
-  font-family: var(--font-playwrite);
+  font-family: var(--font-display);
   font-weight: 200;
 }
 
 .font-manrope-300 {
-  font-family: var(--font-playwrite);
+  font-family: var(--font-display);
   font-weight: 300;
 }

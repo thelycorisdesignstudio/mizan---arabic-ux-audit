@@ -1,10 +1,22 @@
 export type IssueType = 'fail' | 'warn' | 'pass';
+export type Severity = 'critical' | 'high' | 'medium' | 'low';
+export type CertificationTier = 'none' | 'silver' | 'gold' | 'platinum';
 
 export interface Issue {
   type: IssueType;
   text: string;
   selector?: string;
   snippet?: string;
+  severity?: Severity;
+  businessImpact?: string;
+  codeFix?: CodeFix;
+}
+
+export interface CodeFix {
+  language: 'html' | 'css' | 'react' | 'flutter' | 'generic';
+  before: string;
+  after: string;
+  description: string;
 }
 
 export interface Checkpoint {
@@ -21,6 +33,35 @@ export interface Recommendation {
   body: string;
 }
 
+export interface CulturalIntelligence {
+  nativeFeelScore: number;
+  regionScores: Record<string, number>;
+  trustPerceptionScore: number;
+  toneAppropriateness: number;
+  dialectAnalysis: {
+    detected: string;
+    recommended: string;
+    consistency: number;
+  };
+}
+
+export interface RiskMetrics {
+  culturalRiskScore: number;
+  userDropoffPrediction: number;
+  brandTrustImpact: number;
+  revenueRiskLevel: Severity;
+  riskStatements: string[];
+}
+
+export interface CertificationResult {
+  tier: CertificationTier;
+  score: number;
+  eligible: boolean;
+  expiresAt?: string;
+  requirements: { label: string; met: boolean }[];
+  verificationId?: string;
+}
+
 export interface AuditResults {
   id: string;
   url: string;
@@ -29,6 +70,9 @@ export interface AuditResults {
   overallScore: number;
   issues: Record<string, Issue[]>;
   recommendations: Recommendation[];
+  culturalIntelligence?: CulturalIntelligence;
+  riskMetrics?: RiskMetrics;
+  certification?: CertificationResult;
   collaborators?: Collaborator[];
   comments?: Comment[];
 }

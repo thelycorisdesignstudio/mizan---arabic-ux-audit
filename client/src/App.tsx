@@ -9,14 +9,15 @@ import {
   Search, CheckSquare, Code, Terminal, Zap, BookOpen, Map, Shield, CreditCard,
   Award, FileJson, Languages, FileSearch, TrendingUp, Filter, Plus, Send,
   MoreVertical, ThumbsUp, Flag, Check, Calendar, Clock, Link as LinkIcon,
-  Bot, LifeBuoy, HelpCircle, Sparkles, Info, Copy
+  Bot, LifeBuoy, HelpCircle, Sparkles, Info, Copy, Menu, X as XIcon
 } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 import { CHECKPOINTS, LOGS, ASSERTIONS, MARKETS, PATTERNS, REGULATIONS, BENCHMARKS, ISSUES, RECOMMENDATIONS } from './constants';
-import { 
-  AuditResults, Issue, Recommendation, Collaborator, Comment, 
-  Assertion, Pattern, Regulation, BenchmarkProduct 
+import {
+  AuditResults, Issue, Recommendation, Collaborator, Comment,
+  Assertion, Pattern, Regulation, BenchmarkProduct,
+  CulturalIntelligence, RiskMetrics, CertificationResult, CertificationTier, CodeFix
 } from './types';
 import jsPDF from 'jspdf';
 import { domToCanvas } from 'modern-screenshot';
@@ -41,6 +42,7 @@ export default function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [activePillar, setActivePillar] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -356,11 +358,10 @@ export default function App() {
       <div className="bg-layer fixed inset-0 pointer-events-none z-0 overflow-hidden" />
       
       <header className="sticky top-0 z-50 transition-colors duration-300">
-        {/* Product-specific Nav (Mizan OS) */}
-        <nav className="bg-white/80 dark:bg-dark-bg/80 backdrop-blur-md border-b border-black/5 dark:border-dark-border h-16 flex items-center rtl-mirror rtl-mirror-icons">
-          <div className="max-w-[1024px] mx-auto px-6 w-full flex items-center justify-between">
-            <div className="flex items-center gap-3 cursor-pointer" onClick={reset}>
-              <svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <nav className="bg-white/80 dark:bg-dark-bg/80 backdrop-blur-md border-b border-black/5 dark:border-dark-border h-14 sm:h-16 flex items-center rtl-mirror rtl-mirror-icons">
+          <div className="max-w-[1024px] mx-auto px-4 sm:px-6 w-full flex items-center justify-between">
+            <div className="flex items-center gap-2.5 cursor-pointer" onClick={reset}>
+              <svg width="28" height="28" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-8 sm:h-8">
                 <rect width="64" height="64" rx="16" fill="url(#mizan-grad)"/>
                 <path d="M32 14L44 26H38V38H44L32 50L20 38H26V26H20L32 14Z" fill="white" fillOpacity="0.95"/>
                 <path d="M28 30H36V34H28V30Z" fill="white" fillOpacity="0.6"/>
@@ -373,43 +374,86 @@ export default function App() {
                 </defs>
               </svg>
               <div className="flex flex-col leading-none">
-                <span className="text-lg font-bold tracking-tight dark:text-white">Mizan</span>
-                <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-mizan-text3 dark:text-dark-text3">Arabic UX Audit</span>
+                <span className="text-base sm:text-lg font-bold tracking-tight dark:text-white">Mizan</span>
+                <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.2em] text-mizan-text3 dark:text-dark-text3">Arabic UX Audit</span>
               </div>
             </div>
-            <div className="flex items-center gap-6">
-              <div className="hidden sm:flex items-center gap-8 text-[12px] text-mizan-text dark:text-dark-text uppercase tracking-widest font-medium">
+            <div className="flex items-center gap-3 sm:gap-6">
+              <div className="hidden md:flex items-center gap-6 lg:gap-8 text-[11px] lg:text-[12px] text-mizan-text dark:text-dark-text uppercase tracking-widest font-medium">
                 <button onClick={reset} className={`${screen === 'input' ? 'text-mizan-blue' : 'hover:text-mizan-blue'} transition-colors`}>{lang === 'en' ? 'Overview' : 'نظرة عامة'}</button>
                 <button onClick={() => setScreen('features')} className={`${screen === 'features' ? 'text-mizan-blue' : 'hover:text-mizan-blue'} transition-colors`}>{lang === 'en' ? 'Features' : 'المميزات'}</button>
-                <button onClick={() => setScreen('intelligence')} className={`${screen === 'intelligence' ? 'text-mizan-blue' : 'hover:text-mizan-blue'} transition-colors`}>{lang === 'en' ? 'Intelligence' : 'الذكاء'}</button>
+                <button onClick={() => setScreen('intelligence')} className={`${screen === 'intelligence' ? 'text-mizan-blue' : 'hover:text-mizan-blue'} transition-colors`}>{lang === 'en' ? 'Cultural Intelligence' : 'الذكاء الثقافي'}</button>
                 <button onClick={() => setScreen('support')} className={`${screen === 'support' ? 'text-mizan-blue' : 'hover:text-mizan-blue'} transition-colors`}>{lang === 'en' ? 'Support' : 'الدعم'}</button>
               </div>
-              <div className="flex items-center gap-4">
-                <button 
+              <div className="flex items-center gap-2 sm:gap-4">
+                <button
                   onClick={handleLanguageToggle}
-                  className="px-3 py-1 rounded-full border border-black/5 dark:border-dark-border text-[10px] font-bold uppercase tracking-widest hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                  className="hidden sm:block px-3 py-1 rounded-full border border-black/5 dark:border-dark-border text-[10px] font-bold uppercase tracking-widest hover:bg-black/5 dark:hover:bg-white/5 transition-all"
                 >
                   {lang === 'en' ? 'العربية' : 'English'}
                 </button>
-                <button 
+                <button
                   onClick={handleDarkModeToggle}
                   className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-mizan-text3 dark:text-dark-text2"
                 >
                   {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
                 </button>
-                <button 
+                <button
                   onClick={() => startAudit()}
-                  className="bg-mizan-blue hover:bg-mizan-blue-dark text-white px-5 py-2 rounded-full text-[12px] font-bold uppercase tracking-widest transition-all shadow-lg shadow-mizan-blue/20"
+                  className="hidden sm:block bg-mizan-blue hover:bg-mizan-blue-dark text-white px-5 py-2 rounded-full text-[12px] font-bold uppercase tracking-widest transition-all shadow-lg shadow-mizan-blue/20"
                 >
                   Audit Now
+                </button>
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="md:hidden p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                  aria-label="Toggle menu"
+                >
+                  {mobileMenuOpen ? <XIcon size={20} /> : <Menu size={20} />}
                 </button>
               </div>
             </div>
           </div>
         </nav>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden bg-white/95 dark:bg-dark-bg/95 backdrop-blur-xl border-b border-black/5 dark:border-dark-border overflow-hidden"
+            >
+              <div className="px-6 py-6 space-y-4">
+                <div className="flex flex-col gap-4 text-sm font-semibold text-mizan-text dark:text-dark-text">
+                  <button onClick={() => { reset(); setMobileMenuOpen(false); }} className={`text-left ${screen === 'input' ? 'text-mizan-blue' : ''}`}>{lang === 'en' ? 'Overview' : 'نظرة عامة'}</button>
+                  <button onClick={() => { setScreen('features'); setMobileMenuOpen(false); }} className={`text-left ${screen === 'features' ? 'text-mizan-blue' : ''}`}>{lang === 'en' ? 'Features' : 'المميزات'}</button>
+                  <button onClick={() => { setScreen('intelligence'); setMobileMenuOpen(false); }} className={`text-left ${screen === 'intelligence' ? 'text-mizan-blue' : ''}`}>{lang === 'en' ? 'Cultural Intelligence' : 'الذكاء الثقافي'}</button>
+                  <button onClick={() => { setScreen('certification'); setMobileMenuOpen(false); }} className={`text-left ${screen === 'certification' ? 'text-mizan-blue' : ''}`}>{lang === 'en' ? 'Certification' : 'الشهادة'}</button>
+                  <button onClick={() => { setScreen('support'); setMobileMenuOpen(false); }} className={`text-left ${screen === 'support' ? 'text-mizan-blue' : ''}`}>{lang === 'en' ? 'Support' : 'الدعم'}</button>
+                </div>
+                <div className="flex items-center gap-3 pt-4 border-t border-black/5 dark:border-dark-border">
+                  <button
+                    onClick={handleLanguageToggle}
+                    className="px-3 py-1.5 rounded-full border border-black/5 dark:border-dark-border text-[10px] font-bold uppercase tracking-widest"
+                  >
+                    {lang === 'en' ? 'العربية' : 'English'}
+                  </button>
+                  <button
+                    onClick={() => { startAudit(); setMobileMenuOpen(false); }}
+                    className="flex-1 bg-mizan-blue text-white py-2.5 rounded-full text-[12px] font-bold uppercase tracking-widest text-center"
+                  >
+                    Audit Now
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
-      <main className="relative z-10 max-w-5xl mx-auto px-6">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6">
         <AnimatePresence mode="wait">
           {screen === 'input' && (
             <motion.div
@@ -421,15 +465,15 @@ export default function App() {
               className="w-full"
             >
               {/* Hero Section - Apple Features Style */}
-              <section className="pt-24 pb-16 text-center">
-                <div className="max-w-4xl mx-auto px-6">
+              <section className="pt-16 sm:pt-24 pb-12 sm:pb-16 text-center">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8 }}
-                    className="w-20 h-20 rounded-2xl mx-auto mb-10 flex items-center justify-center shadow-xl shadow-mizan-blue/20"
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl mx-auto mb-8 sm:mb-10 flex items-center justify-center shadow-xl shadow-mizan-blue/20"
                   >
-                    <svg width="80" height="80" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="80" height="80" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 sm:w-20 sm:h-20">
                       <rect width="64" height="64" rx="16" fill="url(#hero-grad)"/>
                       <path d="M32 14L44 26H38V38H44L32 50L20 38H26V26H20L32 14Z" fill="white" fillOpacity="0.95"/>
                       <path d="M28 30H36V34H28V30Z" fill="white" fillOpacity="0.6"/>
@@ -442,13 +486,13 @@ export default function App() {
                       </defs>
                     </svg>
                   </motion.div>
-                  
-                  <h1 className="gsap-reveal text-mizan-text dark:text-white text-5xl md:text-7xl font-semibold tracking-tight leading-[1.1] mb-8">
+
+                  <h1 className="gsap-reveal text-mizan-text dark:text-white text-3xl sm:text-5xl md:text-7xl font-semibold tracking-tight leading-[1.1] mb-6 sm:mb-8">
                     {lang === 'en' ? 'Arabic UX Audit.' : 'تدقيق تجربة المستخدم العربية.'}<br />
                     {lang === 'en' ? 'Built for the MENA region.' : 'مصمم لمنطقة الشرق الأوسط.'}
                   </h1>
-                  
-                  <p className="gsap-reveal text-mizan-text3 dark:text-dark-text3 text-xl md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed mb-10">
+
+                  <p className="gsap-reveal text-mizan-text3 dark:text-dark-text3 text-lg sm:text-xl md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed mb-8 sm:mb-10">
                     {lang === 'en' 
                       ? 'Mizan OS is the world\'s first automated audit engine specifically designed for Arabic digital products. From RTL mirroring to linguistic register analysis, we ensure your product feels native to millions.'
                       : 'ميزان OS هو أول محرك تدقيق مؤتمت في العالم مصمم خصيصاً للمنتجات الرقمية العربية. من محاكاة RTL إلى تحليل السجل اللغوي، نضمن أن يشعر ملايين المستخدمين بأن منتجك أصلي.'}
@@ -469,9 +513,9 @@ export default function App() {
               </section>
 
               {/* UAE Leadership Quotes */}
-              <section className="py-24 border-t border-black/5 dark:border-dark-border">
-                <div className="max-w-6xl mx-auto px-6">
-                  <h2 className="gsap-reveal text-center text-3xl md:text-5xl font-semibold tracking-tight dark:text-white mb-4">
+              <section className="py-16 sm:py-24 border-t border-black/5 dark:border-dark-border">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6">
+                  <h2 className="gsap-reveal text-center text-2xl sm:text-3xl md:text-5xl font-semibold tracking-tight dark:text-white mb-4">
                     {lang === 'en' ? 'Inspired by Visionary Leadership' : 'مستوحى من القيادة الحكيمة'}
                   </h2>
                   <p className="gsap-reveal text-center text-mizan-text3 dark:text-dark-text3 text-lg font-medium mb-20 max-w-3xl mx-auto leading-relaxed">
@@ -682,11 +726,11 @@ export default function App() {
               {/* Feature Showcase - Apple Card Style */}
               <div className="space-y-12 pb-32">
                 {/* Feature 1: RTL Patterns */}
-                <section className="gsap-card bg-mizan-off dark:bg-dark-surface rounded-[32px] overflow-hidden shadow-sm border border-black/5 dark:border-dark-border p-12 md:p-20">
-                  <div className="grid md:grid-cols-2 gap-16 items-center">
+                <section className="gsap-card bg-mizan-off dark:bg-dark-surface rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-black/5 dark:border-dark-border p-6 sm:p-12 md:p-20">
+                  <div className="grid md:grid-cols-2 gap-8 sm:gap-16 items-center">
                     <div className="order-2 md:order-1">
-                      <div className="inline-flex items-center px-3 py-1 rounded-full border border-mizan-amber text-mizan-amber text-[11px] font-bold uppercase tracking-widest mb-6">Advanced RTL</div>
-                      <h2 className="text-4xl md:text-5xl font-semibold tracking-tight dark:text-white mb-8 leading-tight">
+                      <div className="inline-flex items-center px-3 py-1 rounded-full border border-mizan-amber text-mizan-amber text-[11px] font-bold uppercase tracking-widest mb-4 sm:mb-6">Advanced RTL</div>
+                      <h2 className="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight dark:text-white mb-6 sm:mb-8 leading-tight">
                         {lang === 'en' ? 'Perfect RTL Mirroring.' : 'محاكاة RTL مثالية.'}
                       </h2>
                       <p className="text-mizan-text3 dark:text-dark-text3 text-xl font-medium leading-relaxed">
@@ -707,19 +751,19 @@ export default function App() {
                 </section>
 
                 {/* Feature 2: Content Governance */}
-                <section className="gsap-card bg-mizan-off dark:bg-dark-surface rounded-[32px] overflow-hidden shadow-sm border border-black/5 dark:border-dark-border p-12 md:p-20">
-                  <div className="grid md:grid-cols-2 gap-16 items-center">
+                <section className="gsap-card bg-mizan-off dark:bg-dark-surface rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-black/5 dark:border-dark-border p-6 sm:p-12 md:p-20">
+                  <div className="grid md:grid-cols-2 gap-8 sm:gap-16 items-center">
                     <div>
-                      <img 
-                        src="https://picsum.photos/seed/mizan-gov/1200/800" 
-                        alt="Content Governance" 
+                      <img
+                        src="https://picsum.photos/seed/mizan-gov/1200/800"
+                        alt="Content Governance"
                         className="rounded-2xl shadow-2xl border border-black/5 dark:border-dark-border"
                         referrerPolicy="no-referrer"
                       />
                     </div>
                     <div>
-                      <div className="inline-flex items-center px-3 py-1 rounded-full border border-mizan-teal text-mizan-teal text-[11px] font-bold uppercase tracking-widest mb-6">Linguistic Intelligence</div>
-                      <h2 className="text-4xl md:text-5xl font-semibold tracking-tight dark:text-white mb-8 leading-tight">
+                      <div className="inline-flex items-center px-3 py-1 rounded-full border border-mizan-teal text-mizan-teal text-[11px] font-bold uppercase tracking-widest mb-4 sm:mb-6">Linguistic Intelligence</div>
+                      <h2 className="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight dark:text-white mb-6 sm:mb-8 leading-tight">
                         {lang === 'en' ? 'Consistent Arabic Register.' : 'سجل لغوي عربي متسق.'}
                       </h2>
                       <p className="text-mizan-text3 dark:text-dark-text3 text-xl font-medium leading-relaxed">
@@ -732,11 +776,11 @@ export default function App() {
                 </section>
 
                 {/* Feature 3: Search Normalization */}
-                <section className="gsap-card bg-mizan-off dark:bg-dark-surface rounded-[32px] overflow-hidden shadow-sm border border-black/5 dark:border-dark-border p-12 md:p-20">
-                  <div className="grid md:grid-cols-2 gap-16 items-center">
+                <section className="gsap-card bg-mizan-off dark:bg-dark-surface rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-black/5 dark:border-dark-border p-6 sm:p-12 md:p-20">
+                  <div className="grid md:grid-cols-2 gap-8 sm:gap-16 items-center">
                     <div className="order-2 md:order-1">
-                      <div className="inline-flex items-center px-3 py-1 rounded-full border border-mizan-blue text-mizan-blue text-[11px] font-bold uppercase tracking-widest mb-6">Search Optimization</div>
-                      <h2 className="text-4xl md:text-5xl font-semibold tracking-tight dark:text-white mb-8 leading-tight">
+                      <div className="inline-flex items-center px-3 py-1 rounded-full border border-mizan-blue text-mizan-blue text-[11px] font-bold uppercase tracking-widest mb-4 sm:mb-6">Search Optimization</div>
+                      <h2 className="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight dark:text-white mb-6 sm:mb-8 leading-tight">
                         {lang === 'en' ? 'Search Normalization Audit.' : 'تدقيق تسوية البحث.'}
                       </h2>
                       <p className="text-mizan-text3 dark:text-dark-text3 text-xl font-medium leading-relaxed">
@@ -758,11 +802,11 @@ export default function App() {
               </div>
 
               {/* Other Key Features Grid - Apple Style */}
-              <section className="py-32 border-t border-black/5 dark:border-dark-border">
-                <div className="max-w-5xl mx-auto px-6">
-                  <div className="grid md:grid-cols-3 gap-x-12 gap-y-20">
+              <section className="py-16 sm:py-32 border-t border-black/5 dark:border-dark-border">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6">
+                  <div className="grid md:grid-cols-3 gap-x-8 sm:gap-x-12 gap-y-12 sm:gap-y-20">
                     <div className="md:col-span-1">
-                      <h2 className="gsap-reveal text-4xl font-semibold tracking-tight dark:text-white leading-tight">
+                      <h2 className="gsap-reveal text-2xl sm:text-4xl font-semibold tracking-tight dark:text-white leading-tight">
                         {lang === 'en' ? 'Comprehensive Arabic Audit.' : 'تدقيق عربي شامل.'}
                       </h2>
                     </div>
@@ -821,14 +865,15 @@ export default function App() {
               </section>
 
               {/* Security & Privacy Section - Apple Style */}
-              <section className="py-32 bg-white dark:bg-dark-bg">
-                <div className="max-w-5xl mx-auto px-6">
-                  <div className="grid md:grid-cols-2 gap-20 items-center">
+              <section className="py-16 sm:py-32 bg-white dark:bg-dark-bg">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6">
+                  <div className="grid md:grid-cols-2 gap-10 sm:gap-20 items-center">
                     <div>
-                      <div className="w-16 h-16 rounded-2xl bg-mizan-teal/10 flex items-center justify-center mb-8">
-                        <ShieldCheck size={32} className="text-mizan-teal" />
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-mizan-teal/10 flex items-center justify-center mb-6 sm:mb-8">
+                        <ShieldCheck size={28} className="text-mizan-teal sm:hidden" />
+                        <ShieldCheck size={32} className="text-mizan-teal hidden sm:block" />
                       </div>
-                      <h2 className="text-5xl font-semibold tracking-tight dark:text-white mb-8 leading-tight">Security is built in. Not bolted on.</h2>
+                      <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight dark:text-white mb-6 sm:mb-8 leading-tight">Security is built in. Not bolted on.</h2>
                       <p className="text-mizan-text3 dark:text-dark-text3 text-xl font-medium leading-relaxed mb-8">
                         Mizan OS is designed with privacy and security at its core. Your audit data is encrypted at rest and in transit. We never use your proprietary UI data to train our public models.
                       </p>
@@ -860,10 +905,10 @@ export default function App() {
               </section>
 
               {/* Enterprise Section - Apple Style */}
-              <section className="py-32 border-t border-black/5 dark:border-dark-border">
-                <div className="max-w-5xl mx-auto px-6 text-center">
-                  <h2 className="text-5xl font-semibold tracking-tight dark:text-white mb-8">Mizan for Enterprise.</h2>
-                  <p className="text-mizan-text3 dark:text-dark-text3 text-xl font-medium leading-relaxed max-w-3xl mx-auto mb-16">
+              <section className="py-16 sm:py-32 border-t border-black/5 dark:border-dark-border">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+                  <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight dark:text-white mb-6 sm:mb-8">Mizan for Enterprise.</h2>
+                  <p className="text-mizan-text3 dark:text-dark-text3 text-lg sm:text-xl font-medium leading-relaxed max-w-3xl mx-auto mb-10 sm:mb-16">
                     Scale your Arabic UX quality across thousands of screens and hundreds of teams. Mizan Enterprise provides the governance and automation needed for world-class digital products.
                   </p>
                   <div className="grid md:grid-cols-3 gap-8 text-left">
@@ -872,8 +917,8 @@ export default function App() {
                       { icon: Zap, title: 'Custom AI Models', desc: 'Train private AI models on your brand voice and terminology for perfectly aligned content generation.' },
                       { icon: BarChart3, title: 'Advanced Analytics', desc: 'Track UX quality trends across your entire portfolio with executive-level dashboards and reporting.' }
                     ].map((item, i) => (
-                      <div key={i} className="bg-mizan-off dark:bg-dark-surface p-10 rounded-[40px] border border-black/5 dark:border-dark-border">
-                        <div className="w-12 h-12 rounded-xl bg-mizan-blue/10 flex items-center justify-center mb-6">
+                      <div key={i} className="bg-mizan-off dark:bg-dark-surface p-6 sm:p-10 rounded-[24px] sm:rounded-[40px] border border-black/5 dark:border-dark-border">
+                        <div className="w-12 h-12 rounded-xl bg-mizan-blue/10 flex items-center justify-center mb-4 sm:mb-6">
                           <item.icon size={24} className="text-mizan-blue" />
                         </div>
                         <h3 className="text-xl font-semibold mb-4 dark:text-white">{item.title}</h3>
@@ -885,11 +930,11 @@ export default function App() {
               </section>
 
               {/* Developer Experience Section - Apple Style */}
-              <section className="py-32 bg-mizan-off dark:bg-dark-surface">
-                <div className="max-w-5xl mx-auto px-6">
-                  <div className="grid md:grid-cols-2 gap-20 items-center">
+              <section className="py-16 sm:py-32 bg-mizan-off dark:bg-dark-surface">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6">
+                  <div className="grid md:grid-cols-2 gap-10 sm:gap-20 items-center">
                     <div className="order-2 md:order-1">
-                      <div className="bg-black dark:bg-dark-bg rounded-3xl p-8 font-mono text-sm leading-relaxed text-mizan-teal/90 shadow-2xl overflow-hidden">
+                      <div className="bg-black dark:bg-dark-bg rounded-2xl sm:rounded-3xl p-4 sm:p-8 font-mono text-xs sm:text-sm leading-relaxed text-mizan-teal/90 shadow-2xl overflow-x-auto">
                         <div className="flex items-center gap-2 mb-4 opacity-30">
                           <div className="w-3 h-3 rounded-full bg-red-500" />
                           <div className="w-3 h-3 rounded-full bg-yellow-500" />
@@ -907,8 +952,8 @@ export default function App() {
                       <div className="w-16 h-16 rounded-2xl bg-mizan-blue/10 flex items-center justify-center mb-8">
                         <Terminal size={32} className="text-mizan-blue" />
                       </div>
-                      <h2 className="text-5xl font-semibold tracking-tight dark:text-white mb-8 leading-tight">Built for developers.</h2>
-                      <p className="text-mizan-text3 dark:text-dark-text3 text-xl font-medium leading-relaxed mb-8">
+                      <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight dark:text-white mb-6 sm:mb-8 leading-tight">Built for developers.</h2>
+                      <p className="text-mizan-text3 dark:text-dark-text3 text-lg sm:text-xl font-medium leading-relaxed mb-6 sm:mb-8">
                         Integrate Mizan OS into your existing workflow with our powerful CLI, GitHub Actions, and robust API. Catch Arabic UX regressions before they reach production.
                       </p>
                       <div className="grid grid-cols-2 gap-8">
@@ -927,11 +972,11 @@ export default function App() {
               </section>
 
               {/* Audit Input Section - Moved to bottom as a "Get Started" */}
-              <section id="audit-input-section" className="py-40 bg-mizan-off dark:bg-dark-surface rounded-[60px] mb-32">
-                <div className="max-w-4xl mx-auto px-6 text-center">
-                  <h2 className="text-5xl font-semibold tracking-tight dark:text-white mb-16">Ready to audit?</h2>
-                  <div className="grid md:grid-cols-2 gap-8 text-left">
-                    <div className="bg-white dark:bg-dark-surface2 p-10 rounded-[32px] shadow-mizan border border-black/5 dark:border-dark-border">
+              <section id="audit-input-section" className="py-20 sm:py-40 bg-mizan-off dark:bg-dark-surface rounded-[32px] sm:rounded-[60px] mb-16 sm:mb-32">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+                  <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight dark:text-white mb-10 sm:mb-16">Ready to audit?</h2>
+                  <div className="grid md:grid-cols-2 gap-6 sm:gap-8 text-left">
+                    <div className="bg-white dark:bg-dark-surface2 p-6 sm:p-10 rounded-[24px] sm:rounded-[32px] shadow-mizan border border-black/5 dark:border-dark-border">
                       <h3 className="text-2xl font-semibold mb-4 dark:text-white">Audit a live URL.</h3>
                       <div className="bg-mizan-off dark:bg-dark-bg rounded-2xl p-2 flex items-center border border-black/5 dark:border-dark-border">
                         <input
@@ -950,8 +995,8 @@ export default function App() {
                         </button>
                       </div>
                     </div>
-                    <div className="bg-white dark:bg-dark-surface2 p-10 rounded-[32px] shadow-mizan border border-black/5 dark:border-dark-border">
-                      <h3 className="text-2xl font-semibold mb-4 dark:text-white">Figma Integration.</h3>
+                    <div className="bg-white dark:bg-dark-surface2 p-6 sm:p-10 rounded-[24px] sm:rounded-[32px] shadow-mizan border border-black/5 dark:border-dark-border">
+                      <h3 className="text-xl sm:text-2xl font-semibold mb-4 dark:text-white">Figma Integration.</h3>
                       <div className="bg-mizan-off dark:bg-dark-bg rounded-2xl p-2 flex items-center border border-black/5 dark:border-dark-border">
                         <input
                           type="text"
@@ -1002,13 +1047,13 @@ export default function App() {
               </section>
 
               {/* Market Insights Section */}
-              <section className="py-32 bg-black text-white rounded-[60px] overflow-hidden relative">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-mizan-blue/20 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
-                <div className="max-w-5xl mx-auto px-6 relative z-10">
-                  <div className="grid md:grid-cols-2 gap-20 items-center">
+              <section className="py-16 sm:py-32 bg-black text-white rounded-[32px] sm:rounded-[60px] overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-mizan-blue/20 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
+                  <div className="grid md:grid-cols-2 gap-10 sm:gap-20 items-center">
                     <div>
-                      <h2 className="text-5xl font-semibold tracking-tight mb-8 leading-tight">Intelligence for every market.</h2>
-                      <p className="text-white/60 text-xl font-medium leading-relaxed mb-12">
+                      <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight mb-6 sm:mb-8 leading-tight">Intelligence for every market.</h2>
+                      <p className="text-white/60 text-lg sm:text-xl font-medium leading-relaxed mb-8 sm:mb-12">
                         Mizan OS understands the nuances of 22 Arabic-speaking markets. From the formality of the Levant to the specific dialects of the Gulf, your product will speak their language.
                       </p>
                       <button 
@@ -1032,17 +1077,17 @@ export default function App() {
               </section>
 
               {/* How it Works Section */}
-              <section className="py-32">
-                <div className="max-w-5xl mx-auto px-6">
-                  <h2 className="text-4xl font-semibold tracking-tight dark:text-white mb-20 text-center">Simple. Powerful. Arabic-first.</h2>
-                  <div className="grid md:grid-cols-3 gap-16">
+              <section className="py-16 sm:py-32">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6">
+                  <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight dark:text-white mb-12 sm:mb-20 text-center">Simple. Powerful. Arabic-first.</h2>
+                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-10 sm:gap-16">
                     {[
                       { step: '01', title: 'Connect', desc: 'Paste a URL, upload a Figma file, or drop a screenshot. Mizan OS instantly maps your product layers.' },
                       { step: '02', title: 'Analyze', desc: 'Our Arabic-first engine runs thousands of checks across RTL, governance, and accessibility.' },
                       { step: '03', title: 'Optimize', desc: 'Get actionable recommendations and automated fixes to elevate your Arabic UX to world-class standards.' }
                     ].map((item, i) => (
                       <div key={i} className="relative">
-                        <div className="text-6xl font-semibold text-mizan-blue/10 dark:text-white/5 mb-6">{item.step}</div>
+                        <div className="text-4xl sm:text-6xl font-semibold text-mizan-blue/10 dark:text-white/5 mb-4 sm:mb-6">{item.step}</div>
                         <h3 className="text-2xl font-semibold mb-4 dark:text-white">{item.title}</h3>
                         <p className="text-mizan-text3 dark:text-dark-text3 text-lg font-medium leading-relaxed">{item.desc}</p>
                       </div>
@@ -1052,10 +1097,10 @@ export default function App() {
               </section>
 
               {/* Testimonials Section */}
-              <section className="py-32 bg-mizan-off dark:bg-dark-surface rounded-[60px] mb-32">
-                <div className="max-w-5xl mx-auto px-6">
-                  <div className="grid md:grid-cols-2 gap-12">
-                    <div className="bg-white dark:bg-dark-surface2 p-12 rounded-[40px] shadow-sm border border-black/5 dark:border-dark-border">
+              <section className="py-16 sm:py-32 bg-mizan-off dark:bg-dark-surface rounded-[32px] sm:rounded-[60px] mb-16 sm:mb-32">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6">
+                  <div className="grid md:grid-cols-2 gap-8 sm:gap-12">
+                    <div className="bg-white dark:bg-dark-surface2 p-8 sm:p-12 rounded-[24px] sm:rounded-[40px] shadow-sm border border-black/5 dark:border-dark-border">
                       <div className="flex gap-1 mb-8">
                         {[1, 2, 3, 4, 5].map(s => <div key={s} className="w-4 h-4 rounded-full bg-mizan-teal" />)}
                       </div>
@@ -1330,6 +1375,163 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* Cultural Intelligence Layer */}
+                {results.culturalIntelligence && (
+                  <div className="mt-16 pt-16 border-t border-mizan-off3 dark:border-dark-border">
+                    <div className="flex items-center gap-4 mb-10">
+                      <h3 className="text-2xl font-semibold tracking-tight dark:text-white">Cultural Intelligence</h3>
+                      <div className="px-3 py-1 bg-mizan-teal/10 text-mizan-teal text-[10px] font-bold uppercase tracking-widest rounded-full">Differentiator</div>
+                      <div className="flex-1 h-px bg-mizan-off3 dark:bg-dark-border" />
+                    </div>
+                    <div className="grid md:grid-cols-4 gap-6 mb-8">
+                      <div className="bg-white dark:bg-dark-surface2 border border-black/5 dark:border-dark-border rounded-2xl p-6 text-center">
+                        <div className="text-4xl font-bold tracking-tight mb-1 dark:text-white">{results.culturalIntelligence.nativeFeelScore}</div>
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-mizan-text4">Native Feel</div>
+                        <div className="w-full h-1.5 bg-mizan-off3 dark:bg-dark-surface rounded-full mt-3">
+                          <div className={`h-full rounded-full ${results.culturalIntelligence.nativeFeelScore >= 70 ? 'bg-mizan-teal' : results.culturalIntelligence.nativeFeelScore >= 40 ? 'bg-mizan-amber' : 'bg-mizan-red'}`} style={{ width: `${results.culturalIntelligence.nativeFeelScore}%` }} />
+                        </div>
+                      </div>
+                      <div className="bg-white dark:bg-dark-surface2 border border-black/5 dark:border-dark-border rounded-2xl p-6 text-center">
+                        <div className="text-4xl font-bold tracking-tight mb-1 dark:text-white">{results.culturalIntelligence.trustPerceptionScore}</div>
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-mizan-text4">Trust Perception</div>
+                        <div className="w-full h-1.5 bg-mizan-off3 dark:bg-dark-surface rounded-full mt-3">
+                          <div className={`h-full rounded-full ${results.culturalIntelligence.trustPerceptionScore >= 70 ? 'bg-mizan-teal' : results.culturalIntelligence.trustPerceptionScore >= 40 ? 'bg-mizan-amber' : 'bg-mizan-red'}`} style={{ width: `${results.culturalIntelligence.trustPerceptionScore}%` }} />
+                        </div>
+                      </div>
+                      <div className="bg-white dark:bg-dark-surface2 border border-black/5 dark:border-dark-border rounded-2xl p-6 text-center">
+                        <div className="text-4xl font-bold tracking-tight mb-1 dark:text-white">{results.culturalIntelligence.toneAppropriateness}</div>
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-mizan-text4">Tone Score</div>
+                        <div className="w-full h-1.5 bg-mizan-off3 dark:bg-dark-surface rounded-full mt-3">
+                          <div className={`h-full rounded-full ${results.culturalIntelligence.toneAppropriateness >= 70 ? 'bg-mizan-teal' : results.culturalIntelligence.toneAppropriateness >= 40 ? 'bg-mizan-amber' : 'bg-mizan-red'}`} style={{ width: `${results.culturalIntelligence.toneAppropriateness}%` }} />
+                        </div>
+                      </div>
+                      <div className="bg-white dark:bg-dark-surface2 border border-black/5 dark:border-dark-border rounded-2xl p-6 text-center">
+                        <div className="text-4xl font-bold tracking-tight mb-1 dark:text-white">{results.culturalIntelligence.dialectAnalysis.consistency}%</div>
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-mizan-text4">Dialect Consistency</div>
+                        <div className="mt-2 text-[10px] text-mizan-text3">
+                          <span className="font-semibold">Detected:</span> {results.culturalIntelligence.dialectAnalysis.detected}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid md:grid-cols-4 gap-4">
+                      {Object.entries(results.culturalIntelligence.regionScores).map(([region, score]) => (
+                        <div key={region} className="flex items-center justify-between bg-mizan-off dark:bg-dark-surface2 rounded-xl px-5 py-3 border border-black/5 dark:border-dark-border">
+                          <span className="text-xs font-bold uppercase tracking-widest text-mizan-text3">{region}</span>
+                          <span className={`text-sm font-bold ${(score as number) >= 70 ? 'text-mizan-teal' : (score as number) >= 40 ? 'text-mizan-amber' : 'text-mizan-red'}`}>{score as number}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Risk & Revenue Impact Dashboard */}
+                {results.riskMetrics && (
+                  <div className="mt-16 pt-16 border-t border-mizan-off3 dark:border-dark-border">
+                    <div className="flex items-center gap-4 mb-10">
+                      <h3 className="text-2xl font-semibold tracking-tight dark:text-white">Risk & Revenue Impact</h3>
+                      <div className={`px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full ${
+                        results.riskMetrics.revenueRiskLevel === 'critical' ? 'bg-mizan-red/10 text-mizan-red' :
+                        results.riskMetrics.revenueRiskLevel === 'high' ? 'bg-mizan-amber/10 text-mizan-amber' :
+                        'bg-mizan-blue/10 text-mizan-blue'
+                      }`}>{results.riskMetrics.revenueRiskLevel} risk</div>
+                      <div className="flex-1 h-px bg-mizan-off3 dark:bg-dark-border" />
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-6 mb-8">
+                      <div className="bg-gradient-to-br from-mizan-red/5 to-mizan-red/[0.02] dark:from-mizan-red/10 dark:to-transparent border border-mizan-red/10 rounded-2xl p-8">
+                        <div className="text-5xl font-bold text-mizan-red mb-2">{results.riskMetrics.culturalRiskScore}</div>
+                        <div className="text-xs font-bold uppercase tracking-widest text-mizan-red/60 mb-4">Cultural Risk Score</div>
+                        <div className="text-sm text-mizan-text3 dark:text-dark-text3 leading-relaxed">Higher scores indicate greater misalignment with Arabic cultural expectations. Target: below 25.</div>
+                      </div>
+                      <div className="bg-gradient-to-br from-mizan-amber/5 to-mizan-amber/[0.02] dark:from-mizan-amber/10 dark:to-transparent border border-mizan-amber/10 rounded-2xl p-8">
+                        <div className="text-5xl font-bold text-mizan-amber mb-2">{results.riskMetrics.userDropoffPrediction}%</div>
+                        <div className="text-xs font-bold uppercase tracking-widest text-mizan-amber/60 mb-4">Predicted User Drop-off</div>
+                        <div className="text-sm text-mizan-text3 dark:text-dark-text3 leading-relaxed">Estimated percentage of Arabic-speaking users who will abandon due to UX friction.</div>
+                      </div>
+                      <div className="bg-gradient-to-br from-mizan-blue/5 to-mizan-blue/[0.02] dark:from-mizan-blue/10 dark:to-transparent border border-mizan-blue/10 rounded-2xl p-8">
+                        <div className="text-5xl font-bold text-mizan-blue mb-2">-{results.riskMetrics.brandTrustImpact}%</div>
+                        <div className="text-xs font-bold uppercase tracking-widest text-mizan-blue/60 mb-4">Brand Trust Impact</div>
+                        <div className="text-sm text-mizan-text3 dark:text-dark-text3 leading-relaxed">Estimated reduction in brand trust perception among MENA market users.</div>
+                      </div>
+                    </div>
+                    <div className="bg-mizan-red/[0.03] dark:bg-mizan-red/[0.06] border border-mizan-red/10 rounded-2xl p-8">
+                      <div className="flex items-center gap-3 mb-6">
+                        <AlertCircle size={20} className="text-mizan-red" />
+                        <h4 className="text-sm font-bold uppercase tracking-widest text-mizan-red">Revenue Risk Statements</h4>
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        {results.riskMetrics.riskStatements.map((statement, i) => (
+                          <div key={i} className="flex items-start gap-3 bg-white/50 dark:bg-dark-surface/50 rounded-xl px-5 py-4 border border-mizan-red/5">
+                            <div className="w-1.5 h-1.5 rounded-full bg-mizan-red mt-2 shrink-0" />
+                            <span className="text-sm font-medium text-mizan-text dark:text-dark-text leading-relaxed">{statement}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Certification Status */}
+                {results.certification && (
+                  <div className="mt-16 pt-16 border-t border-mizan-off3 dark:border-dark-border">
+                    <div className="flex items-center gap-4 mb-10">
+                      <h3 className="text-2xl font-semibold tracking-tight dark:text-white">Certification Status</h3>
+                      <div className="flex-1 h-px bg-mizan-off3 dark:bg-dark-border" />
+                    </div>
+                    <div className={`rounded-[28px] p-10 border-2 relative overflow-hidden ${
+                      results.certification.tier === 'platinum' ? 'bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950 border-blue-200 dark:border-blue-800' :
+                      results.certification.tier === 'gold' ? 'bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950 border-amber-200 dark:border-amber-800' :
+                      results.certification.tier === 'silver' ? 'bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900 dark:to-gray-900 border-slate-300 dark:border-slate-700' :
+                      'bg-mizan-off dark:bg-dark-surface border-mizan-off3 dark:border-dark-border'
+                    }`}>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4 ${
+                            results.certification.tier === 'platinum' ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' :
+                            results.certification.tier === 'gold' ? 'bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300' :
+                            results.certification.tier === 'silver' ? 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300' :
+                            'bg-mizan-off2 text-mizan-text3'
+                          }`}>
+                            <Award size={14} />
+                            {results.certification.tier === 'none' ? 'Not Eligible' : `${results.certification.tier} Certified`}
+                          </div>
+                          <h4 className="text-3xl font-bold tracking-tight dark:text-white mb-2">
+                            Mizan Score: {results.certification.score}
+                          </h4>
+                          <p className="text-sm text-mizan-text3 dark:text-dark-text3 mb-6">
+                            {results.certification.tier === 'platinum' ? 'Outstanding Arabic UX. This product sets the standard for digital excellence in the MENA region.' :
+                             results.certification.tier === 'gold' ? 'Excellent Arabic UX. This product demonstrates strong commitment to Arabic-first design principles.' :
+                             results.certification.tier === 'silver' ? 'Adequate Arabic UX. This product meets minimum standards but has room for significant improvement.' :
+                             'This product does not yet meet the minimum standards for Mizan certification. Address critical issues to become eligible.'}
+                          </p>
+                          {results.certification.verificationId && results.certification.tier !== 'none' && (
+                            <div className="text-[10px] font-mono text-mizan-text4 uppercase tracking-widest">
+                              Verification ID: {results.certification.verificationId}
+                            </div>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <div className={`text-7xl font-bold opacity-10 ${
+                            results.certification.tier === 'platinum' ? 'text-blue-600' :
+                            results.certification.tier === 'gold' ? 'text-amber-500' :
+                            results.certification.tier === 'silver' ? 'text-slate-400' :
+                            'text-mizan-off3'
+                          }`}>
+                            {results.certification.tier === 'none' ? '—' : results.certification.tier.charAt(0).toUpperCase()}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-8 grid md:grid-cols-3 gap-3">
+                        {results.certification.requirements.map((req, i) => (
+                          <div key={i} className="flex items-center gap-3 bg-white/50 dark:bg-dark-surface/30 rounded-xl px-4 py-3 border border-black/5 dark:border-white/5">
+                            {req.met ? <CheckCircle2 size={16} className="text-mizan-teal shrink-0" /> : <XCircle size={16} className="text-mizan-red shrink-0" />}
+                            <span className="text-xs font-semibold dark:text-dark-text2">{req.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="mt-16 pt-16 border-t border-mizan-off3 dark:border-dark-border print-only">
                   <div className="flex items-center gap-4 mb-8">
                     <h3 className="text-2xl font-semibold tracking-tight">Audit Metadata</h3>
@@ -1523,50 +1725,141 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      <footer className="relative z-10 py-24 border-t border-black/5 dark:border-dark-border mt-32 no-print transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="grid md:grid-cols-4 gap-12 mb-20">
-            <div className="col-span-2">
-              <div className="flex items-center gap-4 mb-8">
-                <span className="font-arabic text-3xl text-mizan-blue">ميزان</span>
-                <span className="text-2xl font-semibold tracking-tight dark:text-white">Mizan OS</span>
-              </div>
-              <p className="text-lg text-mizan-text3 dark:text-dark-text3 leading-relaxed max-w-sm">
-                The operating system for building Arabic-first digital products in the GCC and broader MENA region.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-widest text-mizan-text4 mb-8">Product</h4>
-              <ul className="space-y-4 text-sm font-semibold text-mizan-text3 dark:text-dark-text3">
-                <li><button onClick={reset} className="hover:text-mizan-blue transition-colors">Audit Engine</button></li>
-                <li><button onClick={() => setScreen('design-system')} className="hover:text-mizan-blue transition-colors">Design System</button></li>
-                <li><button onClick={() => setScreen('intelligence')} className="hover:text-mizan-blue transition-colors">Intelligence</button></li>
-                <li><button onClick={() => setScreen('certification')} className="hover:text-mizan-blue transition-colors">Certification</button></li>
-                <li><button onClick={() => setScreen('governance')} className="hover:text-mizan-blue transition-colors">Governance</button></li>
-                <li><button onClick={() => setScreen('regression')} className="hover:text-mizan-blue transition-colors">Regression</button></li>
-                <li><button onClick={() => setScreen('benchmark')} className="hover:text-mizan-blue transition-colors">Benchmarks</button></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-widest text-mizan-text4 mb-8">Company</h4>
-              <ul className="space-y-4 text-sm font-semibold text-mizan-text3 dark:text-dark-text3">
-                <li><a href="#" className="hover:text-mizan-blue transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-mizan-blue transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-mizan-blue transition-colors">Terms</a></li>
-                <li><a href="#" className="hover:text-mizan-blue transition-colors">Contact</a></li>
-              </ul>
+      <footer className="relative z-10 border-t border-black/5 dark:border-dark-border mt-32 no-print transition-colors duration-300">
+        {/* CTA Banner */}
+        <div className="bg-gradient-to-r from-mizan-blue to-mizan-teal py-16 sm:py-20">
+          <div className="max-w-4xl mx-auto px-6 sm:px-8 text-center">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-6">
+              {lang === 'en' ? 'The standard that defines digital legitimacy in the Arabic world.' : 'المعيار الذي يحدد الشرعية الرقمية في العالم العربي.'}
+            </h2>
+            <p className="text-white/70 text-base sm:text-lg font-medium mb-10 max-w-2xl mx-auto">
+              {lang === 'en' ? 'Join hundreds of enterprises building Arabic-first digital products. Get certified. Stay compliant. Build trust.' : 'انضم إلى مئات المؤسسات التي تبني منتجات رقمية عربية أولاً. احصل على الشهادة. ابق ملتزماً. ابنِ الثقة.'}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button onClick={() => startAudit()} className="px-10 py-4 bg-white text-mizan-blue rounded-full font-bold text-base shadow-2xl hover:scale-105 transition-all">
+                {lang === 'en' ? 'Start Free Audit' : 'ابدأ التدقيق المجاني'}
+              </button>
+              <button onClick={() => setScreen('certification')} className="px-10 py-4 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-full font-bold text-base hover:bg-white/20 transition-all">
+                {lang === 'en' ? 'Get Certified' : 'احصل على الشهادة'}
+              </button>
             </div>
           </div>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 pt-12 border-t border-black/5 dark:border-dark-border">
-            <div className="text-sm font-medium text-mizan-text4 dark:text-dark-text3">
-              © {new Date().getFullYear()} Schroeder Technologies. All rights reserved.
-            </div>
-            <div className="flex items-center gap-8">
-              <div className="w-10 h-10 rounded-full bg-mizan-off dark:bg-dark-surface2 flex items-center justify-center text-mizan-text3 hover:text-mizan-blue transition-all cursor-pointer">
-                <Share2 size={18} />
+        </div>
+
+        {/* Main Footer */}
+        <div className="bg-mizan-text dark:bg-black py-16 sm:py-20">
+          <div className="max-w-7xl mx-auto px-6 sm:px-8">
+            {/* Brand Block */}
+            <div className="mb-16">
+              <div className="flex items-center gap-3 mb-4">
+                <svg width="28" height="28" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="64" height="64" rx="16" fill="url(#ft-grad)"/>
+                  <path d="M32 14L44 26H38V38H44L32 50L20 38H26V26H20L32 14Z" fill="white" fillOpacity="0.95"/>
+                  <circle cx="32" cy="32" r="4" fill="white"/>
+                  <defs><linearGradient id="ft-grad" x1="0" y1="0" x2="64" y2="64"><stop stopColor="#0071E3"/><stop offset="1" stopColor="#009E91"/></linearGradient></defs>
+                </svg>
+                <span className="text-xl font-bold text-white tracking-tight">Mizan</span>
               </div>
-              <div className="w-10 h-10 rounded-full bg-mizan-off dark:bg-dark-surface2 flex items-center justify-center text-mizan-text3 hover:text-mizan-blue transition-all cursor-pointer">
-                <Users size={18} />
+              <p className="text-sm text-white/40 leading-relaxed max-w-md">
+                Defining the standard for culturally native digital products.
+              </p>
+            </div>
+
+            {/* Footer Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 sm:gap-12 mb-16">
+              {/* Product */}
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-6">Product</h4>
+                <ul className="space-y-3 text-sm font-medium text-white/50">
+                  <li><button onClick={reset} className="hover:text-white transition-colors">Audit Engine</button></li>
+                  <li><button onClick={() => setScreen('features')} className="hover:text-white transition-colors">Features</button></li>
+                  <li><button onClick={() => setScreen('intelligence')} className="hover:text-white transition-colors">Cultural Intelligence</button></li>
+                  <li><button onClick={() => setScreen('certification')} className="hover:text-white transition-colors">Certification</button></li>
+                  <li><button onClick={() => setScreen('design-system')} className="hover:text-white transition-colors">Design System</button></li>
+                  <li><button onClick={() => setScreen('benchmark')} className="hover:text-white transition-colors">Benchmarks</button></li>
+                  <li><button onClick={() => setScreen('regression')} className="hover:text-white transition-colors">Regression Testing</button></li>
+                </ul>
+              </div>
+
+              {/* Developers */}
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-6">Developers</h4>
+                <ul className="space-y-3 text-sm font-medium text-white/50">
+                  <li><button onClick={() => setScreen('docs')} className="hover:text-white transition-colors">Documentation</button></li>
+                  <li><a href="#" className="hover:text-white transition-colors">API Reference</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">SDKs</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">GitHub</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Status</a></li>
+                </ul>
+              </div>
+
+              {/* Standards */}
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-6">Standards</h4>
+                <ul className="space-y-3 text-sm font-medium text-white/50">
+                  <li><button onClick={() => setScreen('certification')} className="hover:text-white transition-colors">Mizan Certification</button></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Certification Registry</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Methodology</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Compliance Framework</a></li>
+                </ul>
+              </div>
+
+              {/* Company */}
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-6">Company</h4>
+                <ul className="space-y-3 text-sm font-medium text-white/50">
+                  <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Press</a></li>
+                  <li><button onClick={() => setScreen('support')} className="hover:text-white transition-colors">Contact</button></li>
+                </ul>
+              </div>
+
+              {/* Legal */}
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-6">Legal</h4>
+                <ul className="space-y-3 text-sm font-medium text-white/50">
+                  <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Cookie Policy</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Data Processing Agreement</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Security</a></li>
+                </ul>
+              </div>
+
+              {/* Social / Presence */}
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-6">Social</h4>
+                <ul className="space-y-3 text-sm font-medium text-white/50">
+                  <li><a href="#" className="hover:text-white transition-colors flex items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    LinkedIn
+                  </a></li>
+                  <li><a href="#" className="hover:text-white transition-colors flex items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    X (Twitter)
+                  </a></li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Trust & Alignment */}
+            <div className="border-t border-white/5 pt-12 mb-12">
+              <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 mb-6">Trust & Alignment</h4>
+              <div className="flex flex-wrap gap-4">
+                {['Dubai Digital Authority', 'TDRA', 'SAMA', 'NDMO', 'WCAG 2.2 AA', 'ISO 30071-1'].map((org) => (
+                  <div key={org} className="px-4 py-2 bg-white/[0.03] border border-white/5 rounded-full text-xs font-semibold text-white/30">{org}</div>
+                ))}
+              </div>
+              <p className="text-xs text-white/20 mt-6 leading-relaxed max-w-2xl">
+                Built in alignment with regional digital transformation initiatives across the UAE and GCC.
+              </p>
+            </div>
+
+            {/* Bottom Bar */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-12 border-t border-white/5">
+              <div className="text-xs font-medium text-white/25 text-center md:text-left">
+                &copy; 2026 Mizan OS, a product of Schroeder Technologies. All rights reserved.
               </div>
             </div>
           </div>
@@ -1678,15 +1971,31 @@ const CheckpointCard: React.FC<{ checkpoint: any; score: number; index: number; 
         />
       </div>
 
-      <div className="p-8 pt-6 flex flex-col gap-4">
+      <div className="p-8 pt-6 flex flex-col gap-5">
         {issues.map((issue, i) => (
           <div key={i} className="flex flex-col gap-2">
             <div className="flex items-start gap-3 text-sm leading-relaxed text-mizan-text2 dark:text-dark-text2">
               {issue.type === 'fail' && <XCircle size={16} className="text-mizan-red mt-0.5 shrink-0" />}
               {issue.type === 'warn' && <AlertCircle size={16} className="text-mizan-amber mt-0.5 shrink-0" />}
               {issue.type === 'pass' && <CheckCircle2 size={16} className="text-mizan-teal mt-0.5 shrink-0" />}
-              <span>{issue.text}</span>
+              <div className="flex-1">
+                <span>{issue.text}</span>
+                {issue.severity && issue.type !== 'pass' && (
+                  <span className={`ml-2 inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                    issue.severity === 'critical' ? 'bg-mizan-red/10 text-mizan-red' :
+                    issue.severity === 'high' ? 'bg-mizan-amber/10 text-mizan-amber' :
+                    issue.severity === 'medium' ? 'bg-mizan-blue/10 text-mizan-blue' :
+                    'bg-mizan-off2 text-mizan-text3'
+                  }`}>{issue.severity}</span>
+                )}
+              </div>
             </div>
+            {issue.businessImpact && issue.type !== 'pass' && (
+              <div className="ml-7 flex items-start gap-2 bg-mizan-red/[0.03] dark:bg-mizan-red/[0.06] border border-mizan-red/10 rounded-xl px-4 py-3">
+                <TrendingUp size={14} className="text-mizan-red mt-0.5 shrink-0" />
+                <span className="text-xs font-semibold text-mizan-red/80">{issue.businessImpact}</span>
+              </div>
+            )}
             {(issue.selector || issue.snippet) && issue.type !== 'pass' && (
               <div className="ml-7 space-y-1">
                 {issue.selector && (
@@ -1699,6 +2008,26 @@ const CheckpointCard: React.FC<{ checkpoint: any; score: number; index: number; 
                     {issue.snippet}
                   </div>
                 )}
+              </div>
+            )}
+            {issue.codeFix && issue.type !== 'pass' && (
+              <div className="ml-7 mt-1 bg-black dark:bg-dark-bg rounded-xl overflow-hidden border border-black/10 dark:border-dark-border">
+                <div className="flex items-center justify-between px-4 py-2 bg-white/5 border-b border-white/10">
+                  <div className="flex items-center gap-2">
+                    <Code size={12} className="text-mizan-teal" />
+                    <span className="text-[10px] font-bold text-mizan-teal uppercase tracking-widest">Auto-Fix Available</span>
+                    <span className="text-[9px] font-mono text-white/30 uppercase">{issue.codeFix.language}</span>
+                  </div>
+                </div>
+                <div className="p-3 text-[10px] font-mono leading-relaxed">
+                  <div className="text-xs font-semibold text-white/50 mb-2">{issue.codeFix.description}</div>
+                  <div className="bg-mizan-red/10 text-red-400 rounded px-3 py-2 mb-2 overflow-x-auto whitespace-pre">
+                    <span className="text-red-500/50 mr-2">-</span>{issue.codeFix.before}
+                  </div>
+                  <div className="bg-mizan-teal/10 text-green-400 rounded px-3 py-2 overflow-x-auto whitespace-pre">
+                    <span className="text-green-500/50 mr-2">+</span>{issue.codeFix.after}
+                  </div>
+                </div>
               </div>
             )}
           </div>

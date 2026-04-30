@@ -6,6 +6,7 @@ import auditRoutes from "./routes/audit.js";
 import figmaRoutes from "./routes/figma.js";
 import metadataRoutes from "./routes/metadata.js";
 import aiRoutes from "./routes/ai.js";
+import certificationRoutes from "./routes/certification.js";
 
 const PORT = process.env.PORT || 5000;
 
@@ -21,6 +22,7 @@ async function startServer() {
   app.use("/api/figma", figmaRoutes);
   app.use("/api/metadata", metadataRoutes);
   app.use("/api/ai", aiRoutes);
+  app.use("/api/certification", certificationRoutes);
 
   app.get("/api/health", (_req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
