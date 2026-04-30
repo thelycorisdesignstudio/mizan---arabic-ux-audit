@@ -1,6 +1,8 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import { connectDB } from "./config/db.js";
 import auditRoutes from "./routes/audit.js";
 import figmaRoutes from "./routes/figma.js";
@@ -8,6 +10,8 @@ import metadataRoutes from "./routes/metadata.js";
 import aiRoutes from "./routes/ai.js";
 import certificationRoutes from "./routes/certification.js";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 5000;
 
 async function startServer() {
@@ -28,8 +32,14 @@ async function startServer() {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
 
+  const clientDist = path.resolve(__dirname, "../../client/dist");
+  app.use(express.static(clientDist));
+  app.get("*", (_req, res) => {
+    res.sendFile(path.join(clientDist, "index.html"));
+  });
+
   app.listen(PORT, () => {
-    console.log(`Mizan API server running on http://localhost:${PORT}`);
+    console.log(`Mizan server running on http://localhost:${PORT}`);
   });
 }
 

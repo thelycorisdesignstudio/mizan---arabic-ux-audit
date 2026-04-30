@@ -7,9 +7,11 @@
     "dev:client": "cd client && npm run dev",
     "dev:server": "cd server && npm run dev",
     "install:all": "npm install && cd client && npm install && cd ../server && npm install",
-    "build": "cd client && npm run build",
+    "build": "cd client && npm run build && cd ../server && npm run build",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
     "start": "cd server && npm start",
-    "lint": "cd client && npm run lint && cd ../server && npm run lint"
+    "typecheck": "cd client && npx tsc --noEmit && cd ../server && npx tsc --noEmit"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: mizan
+    runtime: node
+    plan: free
+    buildCommand: cd client && npm ci && npm run build && cd ../server && npm ci && npm run build
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_BASE_URL
+        sync: false
+      - key: ANTHROPIC_MODEL
+        value: claude-sonnet-4-6-1
+      - key: CLIENT_URL
+        sync: false
+    autoDeploy: true
+    branch: main
+    healthCheckPath: /api/health
