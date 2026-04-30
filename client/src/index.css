@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+NO:wght@100..400&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Playwrite NO", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Arial", sans-serif;
+  --font-playwrite: "Playwrite NO", cursive;
+  --font-arabic: "Noto Naskh Arabic", serif;
+  --font-dm: "Playwrite NO", cursive;
+
+  --color-mizan-blue: rgb(0, 113, 227);
+  --color-mizan-blue-dark: rgb(0, 98, 196);
+  --color-mizan-teal: rgb(0, 158, 145);
+  --color-mizan-teal-dark: rgb(0, 122, 111);
+  --color-mizan-red: rgb(212, 32, 32);
+  --color-mizan-amber: rgb(196, 122, 0);
+  --color-mizan-off: rgb(245, 245, 247);
+  --color-mizan-off2: rgb(232, 232, 237);
+  --color-mizan-off3: rgb(210, 210, 215);
+  --color-mizan-text: rgb(29, 29, 31);
+  --color-mizan-text2: rgb(66, 66, 69);
+  --color-mizan-text3: rgb(134, 134, 139);
+  --color-mizan-text4: rgb(176, 181, 200);
+
+  --radius-mizan: 12px;
+  --radius-mizan-sm: 8px;
+
+  --shadow-mizan: 0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-mizan-md: 0 2px 8px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.07);
+
+  --color-dark-bg: rgb(0, 0, 0);
+  --color-dark-surface: rgb(29, 29, 31);
+  --color-dark-surface2: rgb(45, 45, 47);
+  --color-dark-border: rgba(255, 255, 255, 0.1);
+  --color-dark-text: rgb(245, 245, 247);
+  --color-dark-text2: rgb(161, 161, 166);
+  --color-dark-text3: rgb(134, 134, 139);
+}
+
+@layer base {
+  body {
+    @apply font-sans font-normal bg-white text-mizan-text antialiased transition-colors duration-300;
+  }
+  
+  .dark body {
+    @apply bg-dark-bg text-dark-text;
+  }
+
+  [dir="rtl"], .rtl, [lang^="ar"] {
+    font-family: var(--font-arabic) !important;
+    line-height: 1.7 !important;
+  }
+
+  /* RTL Mirroring for Nav and other elements */
+  .rtl-mirror {
+    @apply rtl:flex-row-reverse;
+  }
+  
+  .rtl-mirror-icons,
+  .rtl-mirror-icons [class*="lucide-chevron"],
+  .rtl-mirror-icons [class*="lucide-arrow"],
+  .rtl-mirror-icons [class*="lucide-move"],
+  .rtl-mirror-icons [class*="lucide-send"],
+  .rtl-mirror-icons [class*="lucide-reply"],
+  .rtl-mirror-icons [class*="lucide-forward"],
+  .rtl-mirror-icons [class*="lucide-trending"],
+  [class*="lucide-chevron"].rtl-mirror-icons,
+  [class*="lucide-arrow"].rtl-mirror-icons,
+  [class*="lucide-move"].rtl-mirror-icons,
+  [class*="lucide-send"].rtl-mirror-icons {
+    @apply rtl:rotate-180;
+  }
+
+  /* Remove italics from all elements */
+  * {
+    font-style: normal !important;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    .print-only {
+      display: block !important;
+    }
+    body {
+      background: white !important;
+    }
+    body::after {
+      display: none !important;
+    }
+    #audit-report {
+      padding: 0 !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+  }
+}
+
+@keyframes breathe1 {
+  0%, 100% { transform: scale(1) translate(0, 0); opacity: 1; }
+  50% { transform: scale(1.1) translate(16px, -16px); opacity: 0.7; }
+}
+
+@keyframes breathe2 {
+  0%, 100% { transform: scale(1) translate(0, 0); opacity: 1; }
+  50% { transform: scale(1.08) translate(-12px, 12px); opacity: 0.75; }
+}
+
+.bg-layer::before {
+  content: '';
+  position: absolute;
+  width: 1000px;
+  height: 1000px;
+  top: -350px;
+  left: -250px;
+  background: radial-gradient(circle, rgba(0, 71, 224, 0.05) 0%, transparent 65%);
+  animation: breathe1 9s ease-in-out infinite;
+}
+
+.bg-layer::after {
+  content: '';
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  bottom: -250px;
+  right: -200px;
+  background: radial-gradient(circle, rgba(0, 158, 145, 0.045) 0%, transparent 65%);
+  animation: breathe2 11s ease-in-out infinite;
+}
+
+.s-sweep {
+  background: conic-gradient(from 0deg, transparent 75%, rgba(0, 71, 224, 0.35) 100%);
+}
+
+.font-dm-200 {
+  font-family: var(--font-playwrite);
+  font-weight: 200;
+}
+
+.font-manrope-300 {
+  font-family: var(--font-playwrite);
+  font-weight: 300;
+}
