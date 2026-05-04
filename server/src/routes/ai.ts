@@ -1,13 +1,27 @@
 import { Router, Request, Response } from "express";
-import Anthropic from "@anthropic-ai/sdk";
+import axios from "axios";
 
 const router = Router();
 
-function getClient() {
-  return new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
-    baseURL: process.env.ANTHROPIC_BASE_URL || undefined,
-  });
+function getAzureConfig() {
+  return {
+    endpoint: (process.env.AZURE_OPENAI_ENDPOINT || "https://tarjama-oai.openai.azure.com").replace(/\/$/, ""),
+    apiKey: process.env.AZURE_OPENAI_API_KEY || "",
+    deployment: process.env.AZURE_OPENAI_DEPLOYMENT || "gpt-4o",
+    apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2024-12-01-preview",
+  };
+}
+
+async function chatCompletions(messages: any[], maxTokens: number) {
+  const cfg = getAzureConfig();
+  if (!cfg.apiKey) throw new Error("AZURE_OPENAI_API_KEY is not configured");
+  const url = `${cfg.endpoint}/openai/deployments/${cfg.deployment}/chat/completions?api-version=${cfg.apiVersion}`;
+  const { data } = await axios.post(
+    url,
+    { messages, max_tokens: maxTokens },
+    { headers: { "api-key": cfg.apiKey, "Content-Type": "application/json" }, timeout: 60000 }
+  );
+  return data?.choices?.[0]?.message?.content || "";
 }
 
 const SYSTEM_PROMPT = `You are Mizan AI, a world-class Arabic UX Expert and Consultant.
@@ -64,10 +78,7 @@ router.post("/chat", async (req: Request, res: Response) => {
   }
 
   try {
-    const client = getClient();
-    const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6-1";
-
-    const messages: Anthropic.MessageParam[] = [];
+    const messages: any[] = [{ role: "system", content: SYSTEM_PROMPT }];
 
     if (history && Array.isArray(history)) {
       for (const msg of history) {
@@ -81,17 +92,7 @@ router.post("/chat", async (req: Request, res: Response) => {
 
     messages.push({ role: "user", content: message });
 
-    const response = await client.messages.create({
-      model,
-      max_tokens: 2048,
-      system: SYSTEM_PROMPT,
-      messages,
-    });
-
-    const text = response.content
-      .filter((block): block is Anthropic.TextBlock => block.type === "text")
-      .map((block) => block.text)
-      .join("");
+    const text = await chatCompletions(messages, 2048);
 
     res.json({ text: text || "I could not process that request. Please try again." });
   } catch (error: any) {
@@ -108,34 +109,23 @@ router.post("/vision-audit", async (req: Request, res: Response) => {
   }
 
   try {
-    const client = getClient();
-    const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6-1";
-
-    const response = await client.messages.create({
-      model,
-      max_tokens: 4096,
-      messages: [
+    const text = await chatCompletions(
+      [
         {
           role: "user",
           content: [
             {
-              type: "image",
-              source: {
-                type: "base64",
-                media_type: (mimeType || "image/png") as "image/png" | "image/jpeg" | "image/gif" | "image/webp",
-                data: image,
+              type: "image_url",
+              image_url: {
+                url: `data:${mimeType || "image/png"};base64,${image}`,
               },
             },
             { type: "text", text: VISION_PROMPT },
           ],
         },
       ],
-    });
-
-    const text = response.content
-      .filter((block): block is Anthropic.TextBlock => block.type === "text")
-      .map((block) => block.text)
-      .join("");
+      4096
+    );
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
